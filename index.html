@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mob y el Misterio de la Academia Psíquica - Presentación Interactiva</title>
+  <!-- Google Fonts: Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="stars-bg"></div>
+  <div class="glow-auras">
+    <div class="aura purple-aura"></div>
+    <div class="aura green-aura"></div>
+  </div>
+
+  <header class="app-header">
+    <div class="header-logo">
+      <span class="logo-icon">🔮</span>
+      <h1>THE PSYCHIC ACADEMY</h1>
+    </div>
+    <div class="psychic-meter-container">
+      <span class="meter-label">Medidor de Confianza Psíquica (Mob):</span>
+      <div class="meter-bar-wrapper">
+        <div class="meter-bar-fill" id="meter-fill" style="width: 0%;"></div>
+        <span class="meter-percentage" id="meter-percent">0%</span>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-layout">
+    <!-- Left Section: Visual novel panel -->
+    <section class="visual-panel">
+      <div class="card-glass content-container">
+        <div class="image-viewport">
+          <img id="chapter-image" src="" alt="Escena de la historia" class="scene-img">
+          <div class="error-barrier-shake" id="shake-overlay"></div>
+          <div class="psychic-explosion-flash" id="flash-overlay"></div>
+        </div>
+        <div class="novel-textbox">
+          <div class="character-name-badge" id="char-name">Reigen Arataka</div>
+          <p class="dialogue-text" id="dialogue-content">...</p>
+        </div>
+      </div>
+      
+      <div class="controls-row">
+        <button id="btn-prev" class="btn btn-secondary" disabled>← Anterior</button>
+        <div class="slide-indicator" id="slide-indicators">
+          <!-- Dots will be added dynamically -->
+        </div>
+        <button id="btn-next" class="btn btn-primary">Siguiente →</button>
+      </div>
+    </section>
+
+    <!-- Right Section: Pedagogical context -->
+    <aside class="sidebar-panel">
+      <div class="card-glass sidebar-card">
+        <h2 class="sidebar-title">🎯 Objetivo de la Misión</h2>
+        <div class="objective-badge" id="chapter-level">Prólogo</div>
+        <p class="sidebar-desc" id="level-objective">Cargando...</p>
+      </div>
+
+      <div class="card-glass sidebar-card">
+        <h2 class="sidebar-title">💡 Estrategia de Gamificación</h2>
+        <ul class="gamification-list" id="gamification-features">
+          <!-- Dynamic details go here -->
+        </ul>
+      </div>
+
+      <div class="card-glass sidebar-card stats-card">
+        <h2 class="sidebar-title">📊 Estadísticas del Aula</h2>
+        <div class="stats-grid">
+          <div class="stat-box">
+            <span class="stat-val" id="stat-production">80%</span>
+            <span class="stat-lbl">Prod. WH-Questions</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-val" id="stat-participation">+50%</span>
+            <span class="stat-lbl">Reducción de Parálisis</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <footer class="app-footer">
+    <p>Estrategia de Autonomía Lingüística — Basado en Mob Psycho 100 para Escuelas Públicas</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
