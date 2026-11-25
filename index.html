@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="grow-coach.css">
 </head>
 <body>
   <div class="stars-bg"></div>
@@ -45,14 +46,72 @@
           <p class="dialogue-text" id="dialogue-content">...</p>
         </div>
       </div>
-      
+
       <div class="controls-row">
-        <button id="btn-prev" class="btn btn-secondary" disabled>← Anterior</button>
+        <button id="btn-prev" class="btn btn-secondary" disabled>&lt;- Anterior</button>
         <div class="slide-indicator" id="slide-indicators">
           <!-- Dots will be added dynamically -->
         </div>
-        <button id="btn-next" class="btn btn-primary">Siguiente →</button>
+        <button id="btn-next" class="btn btn-primary">Siguiente -&gt;</button>
       </div>
+
+      <!-- Módulo de Coaching GROW y Evidencia (Leadership Challenge Game) -->
+      <section id="grow-coaching-panel" class="card-glass grow-panel" aria-label="Coaching GROW">
+        <div class="grow-header">
+          <h3>🧠 Coaching GROW &amp; Liderazgo Colaborativo</h3>
+          <div class="grow-status">
+            <span id="grow-mp-badge">Cargas MP: 3</span>
+            <button type="button" id="btn-use-mp" class="btn btn-secondary grow-btn-sm">
+              Usar Carga MP
+            </button>
+          </div>
+        </div>
+
+        <p class="grow-hint">
+          Registra tu ciclo GROW antes de tomar una decisión en el reto o el aula para documentar reflexión y liderazgo.
+        </p>
+
+        <div class="grow-grid">
+          <div class="grow-field">
+            <label for="grow-g"><strong>G — Goal (Meta):</strong> ¿Qué mejora observable buscamos?</label>
+            <textarea id="grow-g" rows="2" placeholder="Ej. Reducir la ansiedad al hablar y fomentar el trabajo en parejas..."></textarea>
+          </div>
+
+          <div class="grow-field">
+            <label for="grow-r"><strong>R — Reality (Realidad):</strong> ¿Qué evidencia hay y qué limitación existe?</label>
+            <textarea id="grow-r" rows="2" placeholder="Ej. Poca conectividad y temor al error en nivel A1-A2..."></textarea>
+          </div>
+
+          <div class="grow-field">
+            <label for="grow-o"><strong>O — Options (Opciones):</strong> ¿Qué alternativas y pros/contras vemos?</label>
+            <textarea id="grow-o" rows="2" placeholder="Ej. Dinámica con fichas A/B y apoyo impreso vs. actividad aislada..."></textarea>
+          </div>
+
+          <div class="grow-field">
+            <label for="grow-w"><strong>W — Will (Camino):</strong> ¿Cuál es el primer paso y cómo se revisa?</label>
+            <textarea id="grow-w" rows="2" placeholder="Ej. Aplicar una ronda guiada y revisar la retroalimentación al cierre..."></textarea>
+          </div>
+        </div>
+
+        <div class="grow-actions">
+          <label class="grow-checkbox">
+            <input type="checkbox" id="grow-collab-check" checked />
+            Decisión colaborativa (escucha y roles compartidos)
+          </label>
+
+          <div class="grow-buttons">
+            <button type="button" id="btn-save-grow" class="btn btn-primary grow-btn-sm">
+              Guardar GROW y Subir Confianza
+            </button>
+            <button type="button" id="btn-export-report" class="btn btn-secondary grow-btn-sm">
+              Exportar Evidencia (.txt)
+            </button>
+          </div>
+        </div>
+
+        <div id="grow-feedback" class="grow-feedback" aria-live="polite"></div>
+        <pre id="grow-report-preview" class="grow-report" hidden></pre>
+      </section>
     </section>
 
     <!-- Right Section: Pedagogical context -->
@@ -87,8 +146,13 @@
   </main>
 
   <footer class="app-footer">
-    <p>Estrategia de Autonomía Lingüística — Basado en Mob Psycho 100 para Escuelas Públicas</p>
+    <p>Estrategia de Autonomía Lingüística – Basado en Mob Psycho 100 para Escuelas Públicas</p>
   </footer>
+
+  <script src="script.js"></script>
+  <script src="grow-coach.js"></script>
+</body>
+</html>
 
   <script src="script.js"></script>
 </body>
