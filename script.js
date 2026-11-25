@@ -1,211 +1,178 @@
-// Slide Data for the story
-const slides = [
-  {
-    title: "Prólogo: El Llamado de Reigen",
-    character: "Reigen Arataka (Mentor)",
-    image: "images/prologue_reigen.png",
-    dialogue: "¡Atención, alumnos! Este no es un salón de clases ordinario. A partir de hoy, son agentes de la Agencia de Consultoría de Fenómenos Extraños. El inglés no es una materia aburrida... ¡es un código de energía psíquica para comunicarnos con el más allá!",
-    level: "Prólogo: El Llamado",
-    objective: "Establecer la narrativa y conectar el interés de los estudiantes. Desmitificar la clase de inglés y transformarla en una misión.",
-    features: [
-      "Cambio de rol: El docente es Mentor y los alumnos son Agentes.",
-      "El error se redefine como una fluctuación de energía psíquica.",
-      "El Medidor de Confianza grupal reemplaza a las notas tradicionales."
-    ],
-    progress: 5,
-    effect: null,
-    borderClass: "highlight-primary"
-  },
-  {
-    title: "Capítulo 1: El Despertar",
-    character: "Agentes Novatos (Estudiantes)",
-    image: "images/level1_awakening.png",
-    dialogue: "Nos colocamos los auriculares psíquicos. Escuchamos interferencias extrañas en inglés... ¡son las frecuencias del más allá! Si desciframos cómo se sienten los espíritus en los clips de anime, ganamos Medallas de Empatía.",
-    level: "Nivel 1: El Despertar",
-    objective: "Desarrollar comprensión auditiva y empatía identificando emociones y detalles clave en clips de audio en inglés.",
-    features: [
-      "Escucha activa de testimonios en inglés.",
-      "Ganar Medallas de Empatía al identificar emociones (sube +20% al Medidor).",
-      "Libertad de elección: elegir analizar canciones o fragmentos de anime."
-    ],
-    progress: 25,
-    effect: null,
-    borderClass: "highlight-primary"
-  },
-  {
-    title: "Capítulo 2: Entrenamiento Mental",
-    character: "La Barrera del Error (Ente)",
-    image: "images/level2_training.png",
-    dialogue: "¡Cuidado! Un ente gigante de color verde, 'La Barrera del Error', intenta bloquearnos. Debemos usar el 'Escáner de Rutinas' (Present Simple) para debilitarlo: 'The ghost wakes up at midnight. He haunts the kitchen.' ¡Cuidado con el traductor, nos quedan pocos puntos de magia (MP)!",
-    level: "Nivel 2: Entrenamiento",
-    objective: "Escribir y hablar sobre rutinas y hábitos cotidianos usando el Present Simple de forma cooperativa.",
-    features: [
-      "Cargas de Traductor Limitadas (puntos de MP) para reducir la parálisis por error.",
-      "Si el MP se agota, los estudiantes deben cooperar y apoyarse en sus conocimientos.",
-      "Estructuración de rutinas para debilitar al enemigo."
-    ],
-    progress: 60,
-    effect: "shake",
-    borderClass: "highlight-secondary"
-  },
-  {
-    title: "Capítulo 3: El Encuentro Final",
-    character: "Espíritu Afligido (Jefe Final)",
-    image: "images/level3_encounter.png",
-    dialogue: "¿Por qué lloras, criatura? ¡El salón está lleno de niebla psíquica! Formuladores listos: usemos las WH-Questions como conjuros de interrogación. 'What do you want? Where is your home? Why are you sad?' ¡Cada pregunta correcta disipa la niebla!",
-    level: "Nivel 3: El Encuentro",
-    objective: "Lograr que al menos el 80% de los estudiantes formulen autónomamente 5 preguntas correctas con WH-questions.",
-    features: [
-      "Interrogatorio interactivo simulado al espíritu.",
-      "Los errores no restan puntos, sino que aumentan el 'Caos del Caso' con reacciones graciosas.",
-      "Producción autónoma del idioma como llave de la resolución."
-    ],
-    progress: 85,
-    effect: null,
-    borderClass: "highlight-secondary"
-  },
-  {
-    title: "Epílogo: ¡Explosión del 100%!",
-    character: "Shigeo Kageyama (Mob)",
-    image: "images/epilogue_explosion.png",
-    dialogue: "¡Increíble! El medidor ha alcanzado el 100%. Una explosión de colores llena el salón. No hemos memorizado reglas gramaticales inútiles; hemos decodificado un misterio siendo nosotros mismos. ¡Bienvenidos a la Academia Psíquica!",
-    level: "Epílogo: Confianza 100%",
-    objective: "Consolidar el aprendizaje, liberar el potencial y celebrar el desbloqueo de identidad del alumno.",
-    features: [
-      "Desbloqueo de Identidad: hablar inglés sin perder la esencia propia.",
-      "Evaluación mediante Reportes de Caso en lugar de exámenes formales.",
-      "Sensación de triunfo colectivo y empoderamiento."
-    ],
-    progress: 100,
-    effect: "flash",
-    borderClass: "highlight-secondary"
+// grow-coach.js — Integrado con #meter-fill y #meter-percent de Psychic Academy
+const PsychicCoachingEngine = (() => {
+  const state = {
+    mission: 1,
+    confidence: 0,
+    mpCharges: 3,
+    growLog: [],
+    decisions: []
+  };
+
+  const prompts = {
+    G: "¿Qué mejora observable buscamos?",
+    R: "¿Qué evidencia hay y qué limitación existe?",
+    O: "¿Qué alternativas y pros/contras vemos?",
+    W: "¿Cuál es el primer paso y cómo se revisa?"
+  };
+
+  function syncMeterUI(value) {
+    const clamped = Math.max(0, Math.min(100, Number(value) || 0));
+    state.confidence = clamped;
+    const fillEl = document.getElementById("meter-fill");
+    const percentEl = document.getElementById("meter-percent");
+    if (fillEl) fillEl.style.width = `${clamped}%`;
+    if (percentEl) percentEl.textContent = `${clamped}%`;
   }
-];
 
-let currentSlideIndex = 0;
+  function recordGrowStep(step, answer) {
+    if (!prompts[step]) return;
+    state.growLog.push({
+      mission: state.mission,
+      step,
+      question: prompts[step],
+      response: (answer || "").trim(),
+      timestamp: new Date().toISOString()
+    });
+  }
 
-// DOM Elements
-const imgEl = document.getElementById("chapter-image");
-const charNameEl = document.getElementById("char-name");
-const dialogueEl = document.getElementById("dialogue-content");
-const levelEl = document.getElementById("chapter-level");
-const objectiveEl = document.getElementById("level-objective");
-const featuresEl = document.getElementById("gamification-features");
+  function applyDecision({ choiceLabel, isCollaborative, chaosTriggered, deltaConfidence = 20 }) {
+    const currentText = document.getElementById("meter-percent")?.textContent || "0%";
+    const currentNum = parseInt(currentText.replace("%", ""), 10);
+    const base = Number.isNaN(currentNum) ? state.confidence : currentNum;
 
-const meterFillEl = document.getElementById("meter-fill");
-const meterPercentEl = document.getElementById("meter-percent");
+    let nextVal = base;
+    if (chaosTriggered) {
+      nextVal = Math.max(0, base - 5);
+    } else {
+      const bonus = isCollaborative ? 5 : 0;
+      nextVal = Math.min(100, base + deltaConfidence + bonus);
+    }
 
-const btnPrev = document.getElementById("btn-prev");
-const btnNext = document.getElementById("btn-next");
-const indicatorsContainer = document.getElementById("slide-indicators");
+    syncMeterUI(nextVal);
 
-const shakeOverlay = document.getElementById("shake-overlay");
-const flashOverlay = document.getElementById("flash-overlay");
-const contentContainer = document.querySelector(".content-container");
+    state.decisions.push({
+      mission: state.mission,
+      choiceLabel,
+      isCollaborative,
+      chaosTriggered,
+      confidenceAfter: state.confidence
+    });
 
-// Initialize Indicators (Dots)
-function initIndicators() {
-  indicatorsContainer.innerHTML = "";
-  slides.forEach((_, idx) => {
-    const dot = document.createElement("div");
-    dot.className = `dot ${idx === currentSlideIndex ? 'active' : ''}`;
-    dot.addEventListener("click", () => goToSlide(idx));
-    indicatorsContainer.appendChild(dot);
-  });
-}
+    return {
+      mission: state.mission,
+      confidence: state.confidence,
+      mpCharges: state.mpCharges,
+      growCount: state.growLog.length,
+      decisions: state.decisions,
+      growLog: state.growLog
+    };
+  }
 
-// Update UI for the current slide
-function updateUI() {
-  const slide = slides[currentSlideIndex];
-  
-  // Fade image transition
-  imgEl.classList.remove("fade-in");
-  setTimeout(() => {
-    imgEl.src = slide.image;
-    imgEl.alt = slide.title;
-    imgEl.classList.add("fade-in");
-  }, 100);
+  function useMpCharge() {
+    if (state.mpCharges > 0) {
+      state.mpCharges -= 1;
+      return { allowed: true, remainingMp: state.mpCharges };
+    }
+    return { allowed: false, remainingMp: 0 };
+  }
 
-  // Text contents
-  charNameEl.textContent = slide.character;
-  dialogueEl.textContent = slide.dialogue;
-  levelEl.textContent = slide.level;
-  objectiveEl.textContent = slide.objective;
+  function nextMission() {
+    state.mission += 1;
+    return state.mission;
+  }
 
-  // Features list
-  featuresEl.innerHTML = "";
-  slide.features.forEach(feat => {
-    const li = document.createElement("li");
-    li.textContent = feat;
-    featuresEl.appendChild(li);
+  function exportReportText() {
+    const lines = [
+      "EVIDENCIA LEADERSHIP CHALLENGE GAME — THE PSYCHIC ACADEMY",
+      `Confianza registrada: ${state.confidence}% | Cargas MP restantes: ${state.mpCharges}`,
+      "--- CICLO GROW ---",
+      ...state.growLog.map(
+        (item) => `[Misión ${item.mission} | ${item.step}] ${item.question}\nRespuesta: ${item.response || "(Sin registro)"}`
+      ),
+      "--- DECISIONES ---",
+      ...state.decisions.map(
+        (d) => `[Misión ${d.mission}] ${d.choiceLabel} | Colaborativa: ${d.isCollaborative ? "Sí" : "No"} | Confianza: ${d.confidenceAfter}%`
+      )
+    ];
+    return lines.join("\n");
+  }
+
+  return {
+    prompts,
+    syncMeterUI,
+    recordGrowStep,
+    applyDecision,
+    useMpCharge,
+    nextMission,
+    exportReportText
+  };
+})();
+
+(() => {
+  const btnSave = document.getElementById("btn-save-grow");
+  const btnMp = document.getElementById("btn-use-mp");
+  const btnExport = document.getElementById("btn-export-report");
+  const mpBadge = document.getElementById("grow-mp-badge");
+  const feedbackEl = document.getElementById("grow-feedback");
+  const reportEl = document.getElementById("grow-report-preview");
+
+  if (!btnSave || !window.PsychicCoachingEngine) return;
+
+  btnMp?.addEventListener("click", () => {
+    const res = window.PsychicCoachingEngine.useMpCharge();
+    if (mpBadge) mpBadge.textContent = `Cargas MP: ${res.remainingMp}`;
+    feedbackEl.textContent = res.allowed
+      ? `Carga MP activada (apoyo/pista). Quedan ${res.remainingMp}.`
+      : "Sin cargas MP restantes: responde con el análisis y liderazgo de tu equipo.";
   });
 
-  // Update Meter
-  meterFillEl.style.width = `${slide.progress}%`;
-  meterPercentEl.textContent = `${slide.progress}%`;
+  btnSave.addEventListener("click", () => {
+    const steps = {
+      G: document.getElementById("grow-g")?.value || "",
+      R: document.getElementById("grow-r")?.value || "",
+      O: document.getElementById("grow-o")?.value || "",
+      W: document.getElementById("grow-w")?.value || ""
+    };
 
-  // Highlight classes
-  contentContainer.classList.remove("highlight-primary", "highlight-secondary");
-  if (slide.borderClass) {
-    contentContainer.classList.add(slide.borderClass);
-  }
+    const allFilled = Object.values(steps).every((v) => v.trim().length > 0);
+    if (!allFilled) {
+      feedbackEl.textContent = "Completa los cuatro campos (G, R, O y W) antes de guardar.";
+      return;
+    }
 
-  // Handle buttons state
-  btnPrev.disabled = currentSlideIndex === 0;
-  btnNext.textContent = currentSlideIndex === slides.length - 1 ? "¡Completar!" : "Siguiente →";
+    Object.entries(steps).forEach(([step, val]) => {
+      window.PsychicCoachingEngine.recordGrowStep(step, val);
+    });
 
-  // Update dots
-  const dots = document.querySelectorAll(".dot");
-  dots.forEach((dot, idx) => {
-    dot.className = `dot ${idx === currentSlideIndex ? 'active' : ''}`;
+    const isCollaborative = Boolean(document.getElementById("grow-collab-check")?.checked);
+    const summary = window.PsychicCoachingEngine.applyDecision({
+      choiceLabel: `Plan GROW: ${steps.W.slice(0, 75)}`,
+      isCollaborative,
+      chaosTriggered: false,
+      deltaConfidence: 20
+    });
+
+    feedbackEl.textContent = `GROW guardado (${summary.growCount} registros). Medidor actual: ${summary.confidence}%.`;
   });
 
-  // Trigger visual effects
-  triggerEffects(slide.effect);
-}
+  btnExport?.addEventListener("click", async () => {
+    const reportText = window.PsychicCoachingEngine.exportReportText();
+    reportEl.hidden = false;
+    reportEl.textContent = reportText;
 
-function triggerEffects(effect) {
-  // Clear any existing effects
-  shakeOverlay.classList.remove("shake-active");
-  flashOverlay.classList.remove("flash-active");
+    const blob = new Blob([reportText], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "evidencia-grow-psychic-academy.txt";
+    a.click();
+    URL.revokeObjectURL(url);
 
-  if (effect === "shake") {
-    shakeOverlay.classList.add("shake-active");
-    // Auto remove shake after 4s
-    setTimeout(() => {
-      shakeOverlay.classList.remove("shake-active");
-    }, 4000);
-  } else if (effect === "flash") {
-    flashOverlay.classList.add("flash-active");
-  }
-}
-
-function goToSlide(index) {
-  if (index >= 0 && index < slides.length) {
-    currentSlideIndex = index;
-    updateUI();
-  }
-}
-
-// Event Listeners
-btnPrev.addEventListener("click", () => {
-  if (currentSlideIndex > 0) {
-    currentSlideIndex--;
-    updateUI();
-  }
-});
-
-btnNext.addEventListener("click", () => {
-  if (currentSlideIndex < slides.length - 1) {
-    currentSlideIndex++;
-    updateUI();
-  } else {
-    // Reset to beginning or show alert
-    currentSlideIndex = 0;
-    updateUI();
-  }
-});
-
-// Start the presentation
-initIndicators();
-updateUI();
+    try {
+      await navigator.clipboard.writeText(reportText);
+      feedbackEl.textContent = "Evidencia descargada (.txt) y copiada al portapapeles.";
+    } catch {
+      feedbackEl.textContent = "Evidencia descargada (.txt) lista para enviar.";
+    }
+  });
+})();
