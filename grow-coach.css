@@ -1,0 +1,106 @@
+.grow-panel {
+  margin-top: 1.25rem;
+  padding: 1.2rem;
+}
+
+.grow-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.grow-header h3 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.grow-status {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+#grow-mp-badge {
+  padding: 0.3rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+.grow-btn-sm {
+  padding: 0.45rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.grow-hint {
+  margin: 0 0 0.9rem;
+  font-size: 0.9rem;
+  opacity: 0.9;
+}
+
+.grow-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.8rem;
+}
+
+.grow-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.grow-field label {
+  font-size: 0.85rem;
+}
+
+.grow-field textarea {
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 8px;
+  padding: 0.5rem 0.65rem;
+  font-family: inherit;
+  font-size: 0.88rem;
+  resize: vertical;
+}
+
+.grow-actions {
+  margin-top: 0.9rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.grow-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.88rem;
+}
+
+.grow-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+}
+
+.grow-feedback {
+  margin-top: 0.75rem;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.grow-report {
+  margin-top: 0.75rem;
+  padding: 0.8rem;
+  border-radius: 8px;
+  white-space: pre-wrap;
+  font-size: 0.82rem;
+  overflow-x: auto;
+}
