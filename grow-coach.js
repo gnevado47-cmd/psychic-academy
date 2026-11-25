@@ -175,6 +175,7 @@ const PsychicCoachingEngine = (() => {
       feedbackEl.textContent = "Evidencia descargada (.txt) lista para enviar.";
     }
   });
+  
 })();
 // Respaldo directo para asegurar que Guardar GROW y Exportar siempre respondan
 document.addEventListener("DOMContentLoaded", () => {
