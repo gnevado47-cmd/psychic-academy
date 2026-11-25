@@ -176,3 +176,96 @@ const PsychicCoachingEngine = (() => {
     }
   });
 })();
+// Respaldo directo para asegurar que Guardar GROW y Exportar siempre respondan
+document.addEventListener("DOMContentLoaded", () => {
+  const btnSave = document.getElementById("btn-save-grow");
+  const btnExport = document.getElementById("btn-export-report");
+  const feedbackEl = document.getElementById("grow-feedback");
+  const reportEl = document.getElementById("grow-report-preview");
+
+  if (!btnSave || btnSave.dataset.growBound === "true") return;
+  btnSave.dataset.growBound = "true";
+
+  let growBonus = 0;
+  const savedEntries = [];
+
+  function setConfidenceDisplay(pct) {
+    const safePct = Math.max(0, Math.min(100, pct));
+    const fill = document.getElementById("meter-fill");
+    const label = document.getElementById("meter-percent");
+    if (fill) fill.style.width = `${safePct}%`;
+    if (label) label.textContent = `${safePct}%`;
+  }
+
+  btnSave.addEventListener("click", (e) => {
+    e.preventDefault();
+    const g = (document.getElementById("grow-g")?.value || "").trim();
+    const r = (document.getElementById("grow-r")?.value || "").trim();
+    const o = (document.getElementById("grow-o")?.value || "").trim();
+    const w = (document.getElementById("grow-w")?.value || "").trim();
+    const collab = Boolean(document.getElementById("grow-collab-check")?.checked);
+
+    if (!g || !r || !o || !w) {
+      if (feedbackEl) {
+        feedbackEl.textContent = "Completa los cuatro campos (G, R, O y W) antes de guardar.";
+      }
+      return;
+    }
+
+    const increment = collab ? 25 : 20;
+    growBonus = Math.min(100, growBonus + increment);
+
+    const currentPctText = document.getElementById("meter-percent")?.textContent || "0%";
+    const basePct = parseInt(currentPctText.replace("%", ""), 10) || 0;
+    const newPct = Math.min(100, Math.max(basePct + increment, growBonus));
+
+    setConfidenceDisplay(newPct);
+    savedEntries.push({ g, r, o, w, collab, confidence: newPct });
+
+    if (feedbackEl) {
+      feedbackEl.textContent = `GROW guardado (${savedEntries.length} registro). Confianza actualizada a ${newPct}%.`;
+    }
+  });
+
+  if (btnExport && btnExport.dataset.exportBound !== "true") {
+    btnExport.dataset.exportBound = "true";
+    btnExport.addEventListener("click", (e) => {
+      e.preventDefault();
+      const g = (document.getElementById("grow-g")?.value || "").trim();
+      const r = (document.getElementById("grow-r")?.value || "").trim();
+      const o = (document.getElementById("grow-o")?.value || "").trim();
+      const w = (document.getElementById("grow-w")?.value || "").trim();
+      const collab = Boolean(document.getElementById("grow-collab-check")?.checked);
+      const currentPctText = document.getElementById("meter-percent")?.textContent || "0%";
+
+      const text = [
+        "EVIDENCIA COACHING GROW - THE PSYCHIC ACADEMY",
+        `Medidor de Confianza actual: ${currentPctText}`,
+        `Decision colaborativa: ${collab ? "Si" : "No"}`,
+        `G (Goal): ${g || "(Sin registro)"}`,
+        `R (Reality): ${r || "(Sin registro)"}`,
+        `O (Options): ${o || "(Sin registro)"}`,
+        `W (Will): ${w || "(Sin registro)"}`
+      ].join("\n");
+
+      if (reportEl) {
+        reportEl.hidden = false;
+        reportEl.textContent = text;
+      }
+
+      const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "evidencia-grow-psychic-academy.txt";
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+
+      if (feedbackEl) {
+        feedbackEl.textContent = "Evidencia (.txt) generada y descargada.";
+      }
+    });
+  }
+});
